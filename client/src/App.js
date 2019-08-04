@@ -1,12 +1,12 @@
 import React,{Component} from 'react';
-import {BrowserRouter,Redirect,Switch,Route} from 'react-router-dom';
+import {BrowserRouter,Switch,Route} from 'react-router-dom';
 import {Menu} from './components/Menu';
 import {Header} from './components/Header';
 import Booklist from './components/Booklist';
-import Book from './components/Book';
 import Authors from './components/Authors';
 import SignUp from './components/SignUp';
-import Login from './components/Login';
+import LogIn from './components/LogIn';
+import LogOut from './components/LogOut';
 
 class App extends Component{
 
@@ -19,9 +19,10 @@ render(){
           <Route path='/' component={Header} exact />
           <Route path='/author' component={Authors} />
           <Route path='/api/register' component={SignUp} />
+          <Route path='/login' component={LogIn} />
+          <Route path='/logout' component={LogOut} />
           <Route path='/:type' component={Booklist} />
-          <Route path='/:name' component={Book} />
-          <Route path="/api/login" component={Login} />
+          <Route path='/book/:name' component={Booklist} />
         </Switch>
     </BrowserRouter>
   );

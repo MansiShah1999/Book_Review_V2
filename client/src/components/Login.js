@@ -1,7 +1,6 @@
 import React,{Component} from 'react';
 import styled from 'styled-components';
-import axios from 'axios';
-import Link,{Redirect} from 'react-router-dom';
+import {Link,Redirect} from 'react-router-dom';
 
 const Styles=styled.div`
 input[type=email],input[type=password]{
@@ -14,7 +13,7 @@ input[type=email],input[type=password]{
     box-sizing: border-box;
   }
   
-  input[type=button] {
+  input[type=submit] {
     width: 100%;
     background-color: #4CAF50;
     color: white;
@@ -25,7 +24,7 @@ input[type=email],input[type=password]{
     cursor: pointer;
   }
   
-  input[type=button]:hover {
+  input[type=submit]:hover {
     background-color: #45a049;
   }
   
@@ -36,44 +35,46 @@ input[type=email],input[type=password]{
   }
   
 `;
-class Login extends Component{
+
+class LogIn extends Component{
+
     constructor(props){
         super(props)
 
         this.state={
-            email:"",
-            password:""
+            password:'',
+            email:''
+            
+
         }
+        this.formHandler=this.formHandler.bind(this);
     }
 
     formHandler=(e)=>{
-        fetch('http://localhost:4000/api/login')
-       .then(res => res.json())
-       .then(res=>{
-           //var n=len(res.data)
-           //for(var i=0;i<n;i++){
-                //if(this.state.email===res.data.email[i]){
-                  //  if(this.state.password===res.data.password[i]){
-                    //    res.send("Login correctly");
-                      //  <Redirect to="/" />
-                    //}
-                //else{
-                 //   alert('Incorrect password');
-               // }    
-           // }
-            //else{
-              //  alert('Incorrect email id')
-           // }
-        //}
-    })
-       .catch(err => console.log(err)) 
+       e.preventDefault();
+       const data={
+            password: this.state.password,
+            email:this.state.email
+        };
+        console.log(data);
+        fetch('http://localhost:4000/login', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                'Content-Type': 'application/json',
+                'Accept':'application/json'
+                }                
+       })
+       .then(res => res.text())
+       .then(res=>alert(res))
+       .catch(err => console.log(err)) ;
 
-    }
+}
 
     render(){
         return(
             <Styles>
-                <form action="/">
+                <form action="auth">
                     <div>
                         <label>Email</label>
                         <input name="email" type="email" value={this.state.email} 
@@ -86,10 +87,10 @@ class Login extends Component{
                         onChange={e=>this.setState({password:e.target.value})} min='6'/>
                         <br />
                     </div>
-                    <input type="button" value="Log In" onClick={e=>this.formHandler(e)}/>
+                    <input type="submit" onClick={this.formHandler}/>
                 </form >
             </Styles>
         )
     }
 }
-export default Login
+export default LogIn

@@ -22,16 +22,14 @@ class Book extends Component{
     }
     
     getbook(){
-        const name=this.props.match.params
-        fetch(`https://localhost:4000/${{name}}`)
-        //.then(res => res.json())
-        //.then(res=>this.setState({books:res.data}))
+        const name=this.props.name
+        fetch(`https://localhost:4000/book/${name}`)
+        .then(res => res.json())
+        .then(res=>this.setState({book:res.data}))
         .catch(err=>console.log(err))
     }
 
-    componentDidUpdate(){
-        this.getbook()
-    }
+    
 
     fetchBook = ({Id,Name,Author}) => (
         <div key="1">

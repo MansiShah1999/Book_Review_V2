@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import {Link} from 'react-router-dom';
+import {Link,Redirect} from 'react-router-dom';
 
 const Styles=styled.div`
 input[type=text],input[type=email],input[type=password]{
@@ -45,9 +45,8 @@ class SignUp extends Component{
         this.state={
             name:'',
             password:'',
-            email:''
-            
-
+            email:'',
+            errors:[]
         }
         this.formHandler=this.formHandler.bind(this);
     }
@@ -59,24 +58,61 @@ class SignUp extends Component{
             password: this.state.password,
             email:this.state.email
         };
-        
+        const errors=this.validate(data.name,data.email,data.password);
+        if (errors.length > 0) {
+            this.setState({ errors });
+            return;
+        }
+        console.log(data);
         fetch('http://localhost:4000/api/register', {
                 method: 'POST',
+                body: JSON.stringify(data),
                 headers: {
-                'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+                'Content-Type': 'application/json',
+                'Accept':'application/json'
+                }                
        })
-       .then(res => res.json())
-       .then(data => console.log(data))
+       .then(res => res.text())
+       .then(res => alert(res))
        .catch(err => console.log(err)) ;
 
-}
+
+    }
+
+    validate=(name,email,password)=>{
+        // we are going to store errors for all fields
+        // in a signle array
+        const errors = [];
+
+        if (name.length === 0) {
+            errors.push("Name can't be empty");
+        }
+
+        if (email.length < 5) {
+            errors.push("Email should be at least 5 charcters long");
+        }
+        if (email.split("").filter(x => x === "@").length !== 1) {
+            errors.push("Email should contain a @");
+        }
+        if (email.indexOf(".") === -1) {
+            errors.push("Email should contain at least one dot");
+        }
+
+        if (password.length < 6) {
+            errors.push("Password should be at least 6 characters long");
+        }
+
+        return errors;
+    }
 
     render(){
+        const {errors}=this.state
         return(
             <Styles>
                 <form>
+                    {errors.map(error => (
+                    <p key={error}>Error: {error}</p>
+                    ))}
                     <div>
                         <label>Name</label>
                         <input name="name" type="text" value={this.state.name} 
@@ -96,8 +132,8 @@ class SignUp extends Component{
                         <br />
                     </div>
                     <input type="submit" onClick={this.formHandler}/>
+                    <center><p>ALready a member?<Link to="/login">Log in</Link></p></center>
                 </form >
-                <p>ALready a member?<Link to ="/api/login">Log in</Link></p>
             </Styles>
         )
     }
